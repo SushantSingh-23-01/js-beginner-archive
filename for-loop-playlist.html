@@ -84,8 +84,7 @@
 	</div>
 
 	<script>
-		const trackContainer = document.getElementById('track-list-container');
-	
+		// 1. Array of track objects (Your playlist data)
 		const myPlayList = [
 			{ title: 'Blinding Lights', artist: 'The Weeknd', duration: '4:24' },
 			{ title: 'Starboy ft. Daft Punk', artist: 'The Weeknd', duration: '3:50' },
@@ -93,6 +92,10 @@
 			{ title: 'Thunder', artist: 'Imagine Dragons', duration: '3:25' },
 		]
 		
+		// 2. Select DOM elements
+		const trackContainer = document.getElementById('track-list-container');
+		
+		// 3. The For Loop: Generating the UI layout dynamically
 		for (let i=0; i<myPlayList.length; i++) {
 			let currentTrack = myPlayList[i];
 			let trackRow = document.createElement("div");
@@ -111,7 +114,8 @@
 					<button class="play-btn">▶ PLAY</button>
 				</div>
 			`;
-			
+		
+		// 4. Append the fully built row into the webpage container
 		trackContainer.appendChild(trackRow);
 		}
 	</script>
