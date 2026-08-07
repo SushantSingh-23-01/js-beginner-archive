@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Simple Rock Paper Scissors</title>
+</head>
+<body>
+	<h1>Rock-Paper-Scissors</h1>
+	
+	<p>
+		<strong>Score: </strong>
+		Player: <span id="playerScore">0</span>
+		| Computer: <span id="computerScore">0</span>
+	</p>
+	
+	<button id="rockBtn">Rock</button>
+	<button id="paperBtn">Paper</button>
+	<button id="scissorsBtn">Scissors</button>
+	
+	<p>Computer chose: <span id="computerDisplay">-</span></p>
+	<h2 id="resultDisplay">Chose an option to play!</h2>
+	<button id="resetBtn">Reset</button>
+	
+	<script>
+		let playerScore = 0;
+		let computerScore = 0;
+		
+		// 1. GAME LOGIC: Uses if-else conditions to determine the winner
+		function playGame(playerChoice) {
+			let result;
+			let choices = ['rock', 'paper', 'scissors'];
+			let randomIndex = Math.floor(Math.random() * choices.length);
+			let computerChoice = choices[randomIndex];
+			
+			// IF-ELSE LOGIC: Checking equality and combining win conditions with logical operators (&&, ||)
+			if (playerChoice === computerChoice) {
+				result = "It's a tie!";
+			} else if (
+				(playerChoice === 'rock' && computerChoice === 'scissors') ||
+				(playerChoice === 'paper' && computerChoice === 'rock') ||
+				(playerChoice === 'scissors' && computerChoice === 'paper')
+			) {
+				result = 'You win!';
+			} else {
+				result = 'Computer wins!';
+			}			
+			return {computerChoice, result};
+		}
+		
+		// 2. DOM MANAGEMENT: Controls the game flow and updates text on the screen
+		function handlePlay(choice) {
+			let match = playGame(choice);
+			
+			// IF-ELSE LOGIC: Updating the score variables based on match results
+			if (match.result === 'You win!') {
+				playerScore++;
+			} else if (match.result === 'Computer wins!') {
+				computerScore++;
+			}
+			
+			// DOM MANAGEMENT: Finding HTML elements by ID and changing their text dynamically
+			document.getElementById('computerDisplay').textContent = match.computerChoice;
+			document.getElementById('resultDisplay').textContent = match.result;
+			document.getElementById('playerScore').textContent = playerScore;
+			document.getElementById('computerScore').textContent = computerScore;
+		}
+		
+		function resetScore() {
+			playerScore = 0;
+			computerScore = 0;
+			
+			// DOM MANAGEMENT: Resetting all visual elements back to their initial state
+			document.getElementById('computerDisplay').textContent = '-';
+			document.getElementById('resultDisplay').textContent = 'Chose an option to play!';
+			document.getElementById('playerScore').textContent = playerScore;
+			document.getElementById('computerScore').textContent = computerScore;
+		}
+		
+		// 3. EVENT HANDLING: Listening for user clicks to trigger JavaScript functions
+		document.getElementById('rockBtn').addEventListener('click', function () {
+			handlePlay('rock'); // Runs when Rock button is clicked
+		});
+		document.getElementById('paperBtn').addEventListener('click', function () {
+			handlePlay('paper'); // Runs when Paper button is clicked
+		});
+		document.getElementById('scissorsBtn').addEventListener('click', function () {
+			handlePlay('scissors'); // Runs when Scissors button is clicked
+		});
+		document.getElementById('resetBtn').addEventListener('click', function () {
+			resetScore(); // Runs when Reset button is clicked
+		});
+	</script>
+</body>
+</html>
