@@ -16,7 +16,7 @@ array.forEach((element, index) => {
 
 ### Example
 ```javascript
-const numbers =;
+const numbers = [1, 2, 3];
 numbers.forEach(num => console.log(num * 2)); 
 // Outputs: 2, 4, 6
 ```
@@ -30,7 +30,7 @@ Creates a brand-new array containing the transformed results of every item from 
 
 ### Example
 ```javascript
-const prices =;
+const prices = [10, 20, 30];
 const doubledPrices = prices.map(price => price * 2);
 
 console.log(doubledPrices); // Outputs: [20, 40, 60]
@@ -46,7 +46,7 @@ Creates a new array filled only with elements that pass a specific logical condi
 
 ### Example
 ```javascript
-const scores =;
+const scores = [50, 80, 92];
 const passingScores = scores.filter(score => score >= 60);
 
 console.log(passingScores); // Outputs: [80, 92]
@@ -61,7 +61,7 @@ Executes a user-supplied callback function on each element of the array, passing
 
 ### Example
 ```javascript
-const expenses =;
+const expenses = [5, 10, 15];
 const totalExpense = expenses.reduce((accumulator, current) => {
   return accumulator + current;
 }, 0); // 0 is the optional starting initial value
