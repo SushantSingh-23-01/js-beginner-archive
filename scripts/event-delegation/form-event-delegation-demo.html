@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Collapsible Tree View</title>
+	<style>
+		.tree-root {
+			display: flex;
+			align-items: center;
+		}
+		.tree-node {
+			margin-left: 20px;
+		}
+		.content {
+			display: none;		/* Hidden by default */
+		}
+		.tree-node.open >.content {	/* Child Combinator */
+			display: block;		/* Visible when 'open' class is added */
+		}
+		.toggle-btn {
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<!-- Single listener will be attached to this wrapper -->
+	<div id="tree-root">
+		<div class="tree-node">
+			<span class="toggle-btn">▶ Documents</span>
+			<div class="content">
+				<p>Resume.pdf</p>
+				<div class="tree-node">
+					<span class="toggle-btn">▶ Projects</span>
+					<div class="content">
+						<p>App.js</p>
+						<p>Style.css</p>
+					</div>
+				</div>
+			</div>
+		</div> 
+	</div>
+	
+	<script>
+		const treeRoot = document.getElementById('tree-root');
+		
+		// 1. Single listener on the top parent container
+		treeRoot.addEventListener('click', (event) => {
+			// 2. Check if the user clicked a toggle button (or something inside it)
+			const toggleBtn = event.target.closest('.toggle-btn');
+			
+			if (!toggleBtn) return; // Exit if clicked background or plain text
+			
+			// 3. Find the parent .tree-node relative to the clicked button
+			const parentNode = toggleBtn.closest('.tree-node');
+			
+			// 4. Toggle the open class to show/hide child content via css
+			parentNode.classList.toggle('open');
+			
+			// Toggle arrow indicator
+			if (parentNode.classList.contains('open')) {
+				// Strip first two characters i.e. '▶' + ' '
+				toggleBtn.textContent = '▼ ' + toggleBtn.textContent.slice(2);
+			} else {
+				toggleBtn.textContent = '▶ ' + toggleBtn.textContent.slice(2);
+			}
+		})
+	</script>
+</body>
+</html>
