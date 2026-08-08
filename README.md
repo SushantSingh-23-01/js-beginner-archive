@@ -22,6 +22,6 @@ Welcome to my archive of vanilla JavaScript projects! This repository serves as 
 - [x] Learned Array methods. 
 
 ## 🔧 How to Run Locally
-1. Clone the repository: `git clone https://github.com`
+1. Clone the repository: `git clone https://github.com/SushantSingh-23-01/js-beginner-archive.git`
 2. Navigate into the project folder.
 3. Open any `html` file directly in your browser.
