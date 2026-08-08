@@ -1,8 +1,8 @@
 ## Summary of Array Methods
 
-| Method | What method itself returns|
-| :--- | :--- |
-| `forEach` | `undefined ` |
-| `map` | New array of transformed items | 
-| `filter` | A new array of matching items depending on conditions | 
-| `reduce` | The final single accumulator value |
+| Method | What the method itself returns | Key behavior |
+| :--- | :--- | :--- |
+| `forEach` | `undefined` | Executes a function on each element; mutates the original array or causes side effects. |
+| `map` | New array of the same length | Transforms every element and places the results in a new array. |
+| `filter` | New array (can be empty) | Contains only the elements that pass the logical condition. |
+| `reduce` | The single accumulated result | Combines all elements into a single value (number, string, array, or object). |
