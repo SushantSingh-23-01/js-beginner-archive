@@ -1,4 +1,4 @@
-# DOM Even Delegation & `.closest()`
+# DOM Event Delegation & `.closest()`
 
 ## How `closest()` works?
 
