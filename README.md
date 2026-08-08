@@ -16,10 +16,10 @@ Welcome to my archive of vanilla JavaScript projects! This repository serves as 
 | **📋 Task Dashboard** | Array methods (`forEach`, `map`, `reduce`) | [View Project](./task-dashboard.html) |
 
 ## 🧠 Core Milestones Achieved
-- [x] Mastered conditional statements (`if/else`).
-- [x] Learned how to select and modify DOM elements.
-- [x] Implemented event listeners for user interactivity.
-- [x] Learned Array methods. 
+- ✅ Mastered conditional statements (`if/else`).
+- ✅ Learned how to select and modify DOM elements.
+- ✅ Implemented event listeners for user interactivity.
+- ✅ Learned Array methods. 
 
 ## 🔧 How to Run Locally
 1. Clone the repository: `git clone https://github.com/SushantSingh-23-01/js-beginner-archive.git`
