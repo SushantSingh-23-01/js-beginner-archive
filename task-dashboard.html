@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Smart Task Dashboard</title>
+	<style>
+		body {
+			font-family: system-ui, sans-serif;
+			max-width: 800px;
+			margin: 40px auto;
+			padding: 20px;
+			background-color: #f4f6f8;
+		}
+		button {
+			padding: 10px 15px;
+			margin: 0 8px 8px 0;
+			border: none;
+			background-color: #dad4d2;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 14px;
+		}
+		button:hover { background-color: #c2b9b4; }
+		ul {
+			list-style: none;
+			padding: 0;
+		}
+		li {
+			background: white;
+			padding: 15px;
+			margin-bottom: 8px;
+			border-left: 5px solid #0077bf;
+			border-radius: 4px;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+			display: flex;
+			justify-content: space-between;
+		}
+		li.done {
+			border-left-color: #28a745;
+			background-color: #e2f0d9;
+			text-decoration: line-through;
+			color: #6c757d;
+		}
+		.hours-badge {
+			background: #eee;
+			padding: 2px 8px;
+			border-radius: 12px;
+			font-size: 12px;
+		}
+		.summary-box {
+			background: #333;
+			color: white;
+			padding: 12px 15px;
+			border-radius: 4px;
+			margin-top: 15px;
+			font-weight: bold;
+			display: flex;
+			justify-content: space-between;
+		}
+
+		/* CSS filter rule. When 'hide-completed' class is active on the list, hide 'done' items */
+		.hide-completed li.done {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<h1>Smart Task Dashboard</h1>
+	
+	<!-- Button to trigger array methods -->
+	<div class="button-group">
+		<button id="show-all-btn">Show All Tasks</button>
+		<button id="filter-btn">Filter: Incomplete only (.filter)</button>
+		<button id="map-btn">Mark all complete (.map)</button>
+		<button id="reset-btn">Reset Data</button>
+	</div>
+	
+	<!-- The list container where all tasks will appear -->
+	<ul id="task-list"></ul>
+	
+	<!-- Container to show total hours -->
+	<div class="summary-box">
+		<span id="total-hours-container">Progress: 0 / 0 hrs finished</span>
+	</div>
+	
+	<script>
+		// 1. Mock Data
+		const initialTasks = [
+			{ id: 1, title: 'Learn JavaScript', category: 'Study', completed: true, hours: 2 },
+			{ id: 2, title: 'Go for a run', category: 'Health', completed: false, hours: 1 },
+			{ id: 3, title: 'Build an app', category: 'Work', completed: false, hours: 5 },
+			{ id: 4, title: 'Read a book', category: 'Study', completed: false, hours: 1 }
+		]
+		
+		// Variable for holding active data state (will be modified)
+		let currentTasks = [...initialTasks];
+		
+		// 2. DOM Elements
+		const taskListContainer = document.getElementById('task-list');
+		const showAllBtn = document.getElementById('show-all-btn');
+		const filterBtn = document.getElementById('filter-btn');
+		const mapBtn = document.getElementById('map-btn');
+		const resetBtn = document.getElementById('reset-btn');
+		const totalHoursContainer = document.getElementById('total-hours-container');
+		
+		// 3. Render function -> .forEach
+		function renderTasks(arrayToDisplay) {
+			// Clear out any previous items
+			taskListContainer.innerHTML = '';
+			
+			// Use .forEach to loop and generate DOM Elements
+			arrayToDisplay.forEach(task => {
+				const listItem = document.createElement('li');
+				
+				// Add a visual 'done' class for completed tasks
+				if (task.completed) {
+					listItem.classList.add('done');
+				}
+				
+				// Add text and a nice badge showing hours
+				listItem.innerHTML = `
+					<span>${task.title} <b>(${task.category})</b></span>
+					<span class='hours-badge'>${task.hours} hrs</span>
+				`;
+				
+				// Put the list item into our HTML container
+				taskListContainer.appendChild(listItem);
+			});
+			
+			// Calculate total hours using .reduce
+			const stats = arrayToDisplay.reduce((accumulator, task) => {
+				// Fixed typo: hours
+				accumulator.total += task.hours;
+				
+				// Add to completed hours
+				if (task.completed) {
+					accumulator.completed += task.hours;
+				}
+				
+				return accumulator;
+			}, { completed: 0, total: 0 }); // Starting point is an empty totals object
+			
+			totalHoursContainer.textContent = `Progress: ${stats.completed} / ${stats.total} hrs finished`;
+		}
+		
+		// 4. Button interaction events
+		
+		// Filter button handler
+		filterBtn.addEventListener('click', () => {
+			taskListContainer.classList.add('hide-completed');
+		})
+		
+		// Show all button handler
+		showAllBtn.addEventListener('click', () => {
+			taskListContainer.classList.remove('hide-completed');
+		})
+		
+		// Map button handler -> .map
+		mapBtn.addEventListener('click', () => {
+			// Transform our current data 'completed' state true (done)
+			currentTasks = currentTasks.map(task => {
+				return {
+					...task,
+					completed: true,
+				};
+			});
+			renderTasks(currentTasks);
+		})
+		
+		// Reset button handler
+		resetBtn.addEventListener('click', () => {
+			currentTasks = structuredClone(initialTasks);
+			taskListContainer.classList.remove('hide-completed'); // Reset visibility class
+			renderTasks(currentTasks);
+		}) 
+		
+		// 5. Initial Load
+		renderTasks(currentTasks);
+		
+	</script>
+</body> 
+</html>
