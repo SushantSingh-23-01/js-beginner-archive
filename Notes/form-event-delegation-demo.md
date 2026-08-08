@@ -20,7 +20,7 @@ const author = searchForm.elements['author-search'].value;
 
 ## 3. Normalize Event Behavior Across Form Controls
 
-Using `input` at the form level unifies updates across inputs, textareas, range sliders, and select boxes into a single handler.
+Using `input` at the form level unifies updates across *inputs, textareas, range sliders, and select boxes* into a single handler.
 
 ## 4. Accessing Form Controls Efficiently
 
