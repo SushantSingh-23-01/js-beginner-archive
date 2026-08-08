@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>stopPropagation Demo</title>
+	<style>
+		body {
+			font-family: system-ui, sans-serif;
+			max-width: 600px;
+			margin: 40px auto;
+			padding: 0 20px;
+			line-height: 1.5;
+			background-color: #f2f2f2;
+		}
+		.box-parent {
+			max-width: 400px;
+			display: flex;
+			flex-direction: column;
+			background-color: #e3e3e3;
+			border: 2px dashed #9ca3af;
+			padding: 40px;
+			border-radius: 8px;
+			text-align: center;
+			margin-top: 20px;
+		}
+		.btn-child {
+			background-color: #007bff;
+			color: white;
+			border: none;
+			padding: 10px 20px;
+			font-size: 1rem;
+			border-radius: 6px;
+			cursor: pointer;
+		}
+		.btn-child:hover { background-color: #2563eb;}
+		.log-box {
+			background-color: #1e293b;
+			color: #38edf8;
+			font-family: monospace;
+			padding: 15px;
+			border-radius: 6px;
+			margin-top: 20px;
+			min-height: 60px;
+		}
+		.controls { margin-bottom: 15px; }
+	</style>
+</head>
+<body>
+	<h2><code>event.stopPropagation()</code> Demo</h2>
+	<p>
+		By default, clicking an element triggers events on its parent elements (<b>event bubbling</b>).
+		<code>stopPropagation()</code> prevents this event from rising up the DOM tree.
+	</p>
+	
+	<div class="controls">
+		<label>
+			<input type="checkbox" id="toggleStop" checked>
+			Enable <code>event.stopPropagation()</code>
+		</label>
+	</div>
+	
+	<div id="parent" class="box-parent">
+		<b>Parent Container</b>
+		<button id="child" class="btn-child">Child Button</button>
+	</div>
+	
+	<h3>Event Trigger Log:</h3>
+	<div id="log" class="log-box">Click the button or parent to test...</div>
+	
+	<script>
+		const parent = document.getElementById('parent');
+		const child = document.getElementById('child');
+		const log = document.getElementById('log');
+		const toggleStop = document.getElementById('toggleStop');
+		
+		// 1. Reset the log container at the very start of ANY click on the page
+		document.body.addEventListener('click', () => {
+			log.innerHTML = '';
+		}, { capture: true });	// Uses capturing to run BEFORE child/parent listeners
+
+		// Parent Click Handler
+		parent.addEventListener('click', () => {
+			if (log.innerHTML === '') {
+				// If the log is empty, it means the parent itself was clicked directly
+				log.innerHTML += '[Parent] click event fired!';
+			} else {
+				// If it's not empty, the child already ran, so we append the bubble log
+				log.innerHTML += '<br>[Parent] click event fired!';
+			}
+			
+		});
+		
+		// Child Click Handler
+		child.addEventListener('click', (event) => {
+			log.innerHTML = '[Child] click event fired!'
+			
+			if (toggleStop.checked) {
+				event.stopPropagation();
+				log.innerHTML += ' -> stopPropagation() blocked the parent!';
+			}
+		});
+	</script>
+</body>
+</html>
