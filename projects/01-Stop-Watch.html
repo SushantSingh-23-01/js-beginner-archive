@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Stop Watch</title>
+	<style>
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+		body {
+			font-family: system-ui, sans-serif;
+			display: flex;
+			flex-direction: column;
+			align-items: center
+			padding: 2rem;
+			text-align: center;
+		}
+		h2 {
+			margin: 1rem 0;
+		}
+		.time-display {
+			font-size: 3.5rem;
+			font-weight: 700;
+			font-variant-numeric: tabular-nums; /* Prevents numbers from jumping around */
+			margin-bottom: 2rem;
+		}
+		.button-group {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 12px;
+			margin-bottom: 2rem;
+			
+			width: 100%;
+			max-width: 300px;
+			margin-inline: auto; 
+		}
+		button {
+			padding: 1rem;
+			cursor: pointer;
+		}
+		.lap-container {
+			list-style: none;
+			width: 100%;
+			max-width: 300px;
+			margin: 0 auto;
+			padding: 0;
+		}
+		.lap-container li {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 0.75rem 0;
+			border-bottom: 1px solid #eee;
+			font-size: 1.1rem;
+		}
+		.lap-container li span:last-child {
+			font-weight: 600;
+			font-variant-numeric: tabular-nums;
+		}
+	</style>
+</head>
+<body>
+	<h2>STOP WATCH</h2>
+	<h1 id="timeDisplay" class="time-display">00:00</h1>
+	
+	<div class="button-group">
+		<button id="startBtn" class="start-button">Start</button>
+		<button id="stopBtn" class="stop-button">Stop</button>
+		<button id="resetBtn" class="reset-button">Reset</button>
+		<button id="lapBtn" class="lap-button">Lap</button>
+	</div>
+
+	<h3>Laps</h3>
+	<ul id="lapContainer" class="lap-container"></ul>
+	
+	<script>
+		let secondsElapsed = 0;
+		let interval = null;
+		let lapIdx = 1;
+		
+		const timeDisplay = document.getElementById('timeDisplay');
+		const lapContainer = document.getElementById('lapContainer');
+		
+		const startBtn = document.getElementById('startBtn');
+		const stopBtn = document.getElementById('stopBtn');
+		const resetBtn = document.getElementById('resetBtn');
+		const lapBtn = document.getElementById('lapBtn');
+		
+		function setTime() {
+			const minutes = Math.floor(secondsElapsed / 60);
+			const seconds = secondsElapsed % 60;
+			
+			// Pad both minutes and seconds to keep the 00:00 format
+			const paddedMinutes = String(minutes).padStart(2, '0');
+			const paddedSeconds = String(seconds).padStart(2, '0');
+			
+			timeDisplay.innerText = `${paddedMinutes}:${paddedSeconds}`;
+		}
+		
+		function startClock() {
+			if (interval) stopClock();
+			
+			interval = setInterval(() => {
+				secondsElapsed++;
+				setTime();
+			}, 1000);
+		}
+		
+		function stopClock() {
+			clearInterval(interval);
+			interval = null;
+		}
+		
+		function resetClock() {
+			stopClock();
+			secondsElapsed = 0;
+			setTime();
+			
+			lapIdx = 1;
+			lapContainer.innerHTML = '';
+		}
+		
+		function lapInterval() {
+			if (!interval) return;
+			
+			const lapTime = timeDisplay.innerText;
+			const lapElm = document.createElement('li');
+			
+			// Split the counter and time so they push to opposite sides via CSS flexbox
+			lapElm.innerHTML = `<span>Lap ${lapIdx++}</span> <span>${lapTime}</span>`;;
+				
+			// Instead of appendChild, preprend allows to add new lap to top
+			lapContainer.prepend(lapElm);
+		}
+		
+		startBtn.addEventListener('click', startClock);
+		stopBtn.addEventListener('click', stopClock);
+		resetBtn.addEventListener('click', resetClock);
+		lapBtn.addEventListener('click', lapInterval);
+	</script>
+</body>
+</html>
