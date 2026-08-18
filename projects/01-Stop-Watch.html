@@ -14,7 +14,7 @@
 			font-family: system-ui, sans-serif;
 			display: flex;
 			flex-direction: column;
-			align-items: center
+			align-items: center;
 			padding: 2rem;
 			text-align: center;
 		}
@@ -130,9 +130,10 @@
 			const lapElm = document.createElement('li');
 			
 			// Split the counter and time so they push to opposite sides via CSS flexbox
-			lapElm.innerHTML = `<span>Lap ${lapIdx++}</span> <span>${lapTime}</span>`;;
-				
-			// Instead of appendChild, preprend allows to add new lap to top
+			lapElm.innerHTML = `<span>Lap ${lapIdx++}</span> <span>${lapTime}</span>`;
+			
+			
+			// Instead of appendChild, prepend allows to add new lap to top
 			lapContainer.prepend(lapElm);
 		}
 		
