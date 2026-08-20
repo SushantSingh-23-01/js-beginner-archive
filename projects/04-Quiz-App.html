@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Quiz App</title>
+	<style>
+		* {
+			box-sizing: border-box;
+			font-family: system-ui, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+		body {
+			background-color: #272575;
+		}
+		.app-container {
+			background-color: #d2d2d2;
+			color: #3d3d3d;
+			width: 90%;
+			max-width: 600px;
+			margin: 100px auto 0;
+			border-radius: 10px;
+			padding: 1.5rem;
+		}
+		.app-container h1 {
+			font-size: 2rem;
+			font-weight: 700;
+			border-bottom: 1px solid #3d3d3d;
+			padding-bottom: 1.5rem;
+		}
+		.quiz-container {
+			padding: 20px 0;
+		}
+		.quiz-container h2 {
+			font-size: 1.5rem;
+			font-weight: 600;
+			margin-bottom: 1rem;
+		}
+		.answer-buttons-container {
+			display: flex;
+			flex-direction: column;
+			gap: 1rem;
+		}
+		.answer-btn {
+			background-color: #e4e4e4;
+			text-align: left;
+			font-weight: 500;
+			border: 1.5px solid #3d3d3d;
+			border-radius: 4px;
+			padding: 1rem;
+			cursor: pointer;
+			transition: background-color 0.2s ease, color 0.2s ease;
+		}
+		.answer-btn:hover:not([disabled]) { 
+			background-color: #2e2e2e;
+			color: #f2f2f2;
+		}
+		.answer-btn:disabled { cursor: not-allowed; }
+		.answer-btn.correct {
+			background-color: #9aeabc;
+		}
+		.answer-btn.incorrect {
+			background-color: #ff9393;
+		}
+		.next-btn {
+			background-color: #2e2e2e;
+			color: #f2f2f2;
+			margin: 2rem auto 0;
+			border: none;
+			padding: 0.5rem;
+			border-radius: 4px;
+			width: 7.5rem;
+			font-size: 1.1rem;
+			display: none; /* Kept only the default hidden state */
+			transition: background-color 0.2s ease;
+		}
+		.next-btn:hover { background-color: #4c4c4c; }
+	</style>
+</head>
+
+<body>
+	<main class="app-container">
+		<h1>Sample Quiz</h1>
+		<div class="quiz-container">
+			<h2 id="question" class="question-text">Question goes here</h2>
+			<div id="answerButtons" class="answer-buttons-container"></div>
+			<button id="nextBtn" class="next-btn">Next</button>
+		</div>
+	</main>
+
+	<script>
+		const quizData = [
+			{
+				question: "Which is the largest animal in the world?",
+				answers: [
+					{text: 'Elephant', correct: false},
+					{text: 'Blue Whale', correct: true},
+					{text: 'Giraffe', correct: false},
+					{text: 'Shark', correct: false}
+				]
+			},
+			{
+				question: "Which is the largest desert in the world?",
+				answers: [
+					{text: 'Kalahari', correct: false},
+					{text: 'Gobi', correct: false},
+					{text: 'Sahara', correct: false},
+					{text: 'Antarctica', correct: true}
+				]
+			},
+			{
+				question: "What is the hardest natural substance on Earth?",
+				answers: [
+					{text: 'Gold', correct: false},
+					{text: 'Diamond', correct: true},
+					{text: 'Iron', correct: false},
+					{text: 'Quartz', correct: false}
+				]
+			},
+			{
+				question: "How many bones are there in an adult human body?",
+				answers: [
+					{text: '186', correct: false},
+					{text: '216', correct: false},
+					{text: '206', correct: true},
+					{text: '306', correct: false}
+				]
+			},
+			{
+				question: "Which planet is closest to the Sun?",
+				answers: [
+					{text: 'Mercury', correct: true},
+					{text: 'Venus', correct: false},
+					{text: 'Mars', correct: false},
+					{text: 'Earth', correct: false}
+				]
+			},
+		];
+		
+		const questionElm = document.getElementById('question');
+		const answerButtons = document.getElementById('answerButtons');
+		const nextBtn = document.getElementById('nextBtn');
+		
+		let currentIdx = 0;
+		let score = 0;
+		let shuffledData = [];
+		
+		// Fisher-Yates Shuffle Algorithm
+		function shuffle(array) {
+			const newArray = [...array];
+			for (let i = newArray.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+			}
+			return newArray;
+		}
+		
+		function startQuiz() {
+			currentIdx = 0;
+			score = 0;
+			shuffledData = shuffle(quizData); 
+			nextBtn.innerText = 'Next';
+			resetState();
+			displayQuestion();
+		}
+	
+		function resetState() {
+			nextBtn.style.display = 'none';
+			answerButtons.innerHTML = '';
+		}
+		
+		function displayQuestion() {
+			const currentData = shuffledData[currentIdx];
+			questionElm.innerText = `${currentIdx + 1}. ${currentData.question}`;
+			
+			const shuffledAnswers = shuffle(currentData.answers);
+			
+			shuffledAnswers.forEach(answer => {
+				const button = document.createElement('button');
+				button.classList.add('answer-btn');
+				button.innerText = answer.text;
+				answerButtons.appendChild(button);
+				
+				if (answer.correct) {
+					button.dataset.correct = answer.correct;
+				}
+				button.addEventListener('click', checkAnswer);
+			});
+		}
+		
+		function checkAnswer(event) {
+			const selectedBtn = event.target;
+			
+			if (selectedBtn.dataset.correct === 'true') {
+				selectedBtn.classList.add('correct');
+				score++;
+			} else {
+				selectedBtn.classList.add('incorrect');
+			}
+			
+			Array.from(answerButtons.children).forEach(button => {
+				if (button.dataset.correct === 'true') {
+					button.classList.add('correct');
+				}
+				button.disabled = true;
+			});
+			
+			nextBtn.style.display = 'block';
+		}
+
+		function showScore() {
+			resetState();
+			questionElm.innerText = `You scored ${score} out of ${quizData.length}!`;
+			nextBtn.innerText = 'Play Again';
+			nextBtn.style.display = 'block';
+		}
+		
+		nextBtn.addEventListener('click', () => {
+			if (currentIdx < shuffledData.length) {
+				currentIdx++;
+				if (currentIdx < shuffledData.length) {
+					resetState();
+					displayQuestion();
+				} else {
+					showScore();
+				}
+			} else {
+				startQuiz();
+			}
+		});
+		
+		startQuiz();
+	</script>
+</body>
+</html>
