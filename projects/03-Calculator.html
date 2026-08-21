@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset='UTF-8'>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Calculator App</title>
+	<style>
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+		body {
+			font-family: system-ui, -apple-system, sans-serif;
+			width: 100%;
+			height: 100vh;
+			
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			padding: 1rem;
+			
+			background: #121212;
+		}
+		.calc-container {
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			border-radius: 16px;
+			padding: 1rem;
+			
+			width: 100%;
+			max-width: 380px;
+		}
+		
+		/* Display Styling */
+		.calc-display {
+			background-color: #181818;
+			border: none;
+			width: 100%;
+			padding: 1rem;
+			margin-bottom: 1rem;
+			
+			color: #e0e0e0;
+			font-size: 2rem;
+			font-weight: 600;
+			text-align: right;
+		}
+		
+		/* Keypad Styling */
+		.keypad-container {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 0.8rem;
+		}
+		
+		.btn {
+			border: none;
+			border-radius: 50%;
+			aspect-ratio: 1 / 1;
+			
+			width: 100%;
+			background-color: #242424;
+			
+			color: #e0e0e0;
+			font-size: 1.5rem;
+			font-weight: 500;
+			
+			cursor: pointer;
+			transition: transform 0.1s ease;
+		}
+		.btn.operator {
+			background-color: #d3f25d;
+			color: #121212;
+		}
+		.btn.clear {
+			background-color: #2e2e2e;
+		}
+		.btn:hover {
+			transform: translateY(-2px);
+		}
+	</style>
+</head>
+<body>
+	<main class="calc-container">
+		<div id="calcDisplay" class="calc-display">0</div>
+		<div id="keypad" class="keypad-container">
+			<!-- Row-1 -->
+			<button class="btn clear">C</button>
+			<button class="btn clear">C.E</button>
+			<button class="btn operator">⌫</button>
+			<button class="btn operator">/</button>
+			
+			<!-- Row-2 -->
+			<button class="btn">7</button>
+			<button class="btn">8</button>
+			<button class="btn">9</button>
+			<button class="btn operator">*</button>
+			
+			<!-- Row-3 -->
+			<button class="btn">4</button>
+			<button class="btn">5</button>
+			<button class="btn">6</button>
+			<button class="btn operator">-</button>
+			
+			<!-- Row-4 -->
+			<button class="btn">1</button>
+			<button class="btn">2</button>
+			<button class="btn">3</button>
+			<button class="btn operator">+</button>
+
+			<!-- Row-5 -->
+			<button class="btn">%</button>
+			<button class="btn">0</button>
+			<button class="btn">.</button>
+			<button class="btn operator">=</button>
+		</div>
+	</main>
+	<script>
+		const calcDisplay = document.getElementById('calcDisplay');
+		const calcButtons = document.querySelectorAll('.btn');
+		const OPERATORS = ['+', '-', '*', '/'];
+		
+		function appendItem(value) {
+			const currentText = calcDisplay.innerText;
+			const lastChar = currentText.slice(-1);
+			const isValueOperator = OPERATORS.includes(value);
+			const isLastCharOperator = OPERATORS.includes(lastChar);
+			
+			// 1. Handle OPERATORS
+			if (isValueOperator){
+				// 1.1 Prevent starting with operators except minus
+				if (currentText === '0' && value !== '-') return;
+				
+				// 1.2 Ensure a decimal is not left open
+				if (lastChar === '.') return;
+							
+				// 1.3 Replace old operator from new operator if last character is an operator
+				if (isLastCharOperator) {
+					calcDisplay.innerText = currentText.slice(0, -1) + value;
+					return;
+				}
+			}
+			
+			// 2. Prevent multiple decimals
+			if (value === '.') {
+				const parts = currentText.split(/[+\-\*\/]/);
+				const currentNumber = parts[parts.length - 1];
+				if (currentNumber.includes('.')) return;
+			}
+			
+			// 3. Handle % rule logic
+			if (value === '%') {
+				if (currentText === '0' || isLastCharOperator || lastChar === '%') return;
+				
+				calcDisplay.innerText += value;
+				return;
+			}
+			
+			// 4. Handle Error
+			if (currentText === 'Error') {
+				calcDisplay.innerText = '';
+			}
+			
+			// 5. Handle initial 0
+			if (currentText === '0' && !isValueOperator && value !== '.') {
+				calcDisplay.innerText = value;
+			} else {
+				// Prevent typing a number directly after a percentage sign (force an operator first)
+				if (lastChar === '%' && !isLastCharOperator && value !== '=') return;
+				calcDisplay.innerText += value;
+			}	
+		}
+		
+		function removeItem() {
+			const currentText = calcDisplay.innerText;
+			if (currentText.length > 1 && currentText !== 'Error') {
+				calcDisplay.innerText = currentText.slice(0, -1);
+			} else {
+				calcDisplay.innerText = '0';
+			}
+		}
+		
+		function evalExpr() {
+			try {
+				let expression = calcDisplay.innerText;
+				let lastChar = expression.slice(-1);
+				
+				// Handle %
+				expression = expression.replace(/%/g, '/100');
+				
+				// Prevent evaluating expressions with last character as operator
+				if (OPERATORS.includes(lastChar)) return; 
+				
+				calcDisplay.innerText = eval(expression);
+				
+			} catch {
+				calcDisplay.innerText = 'Error';
+			}
+		}
+		
+		calcButtons.forEach(button => {
+			button.addEventListener('click', () => {
+				const buttonValue = button.innerText;
+				
+				if (buttonValue === 'C' || buttonValue === 'C.E') {
+					calcDisplay.innerText = '0';
+				} else if (buttonValue === '⌫') {
+					removeItem();
+				} else if (buttonValue === '=') { 
+					evalExpr();
+				} else {
+					appendItem(buttonValue);
+				}
+			});
+		})
+		
+		document.addEventListener('keydown', (e) => {
+			const keyValue = e.key;
+			if (!isNaN(keyValue) || ['+', '-', '*', '/', '%', '.'].includes(keyValue)) {
+				appendItem(keyValue);
+			} else if (keyValue === 'Enter' || keyValue === '=') {
+				e.preventDefault();
+				if (calcDisplay.innerText === 'Error') return;
+				evalExpr();
+			} else if (keyValue === 'Escape' || keyValue.toLowerCase() === 'c') {
+				calcDisplay.innerText = '0';
+			} else if (keyValue === 'Backspace') {
+				removeItem();
+			}
+		})
+	</script>
+</body>
+</html>
